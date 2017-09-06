@@ -21,14 +21,43 @@ namespace EmployeeService.Controllers
         }
 
         // GET api/employee/5
-        public employee Get(int id)
+        public HttpResponseMessage Get(int id)
         {
             using (TestDBEntities entities = new TestDBEntities())
             {
-                return entities.employees.FirstOrDefault(e => e.ID == id);
+                var entity = entities.employees.FirstOrDefault(e => e.ID == id);
+
+                if(entity != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, entity);
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Employee not found with ID: " + id);
+                }
             }
         }
 
+        // Post api/employee
+        public HttpResponseMessage Post([FromBody] employee employee)
+        {
+            try
+            {
+                using (TestDBEntities entities = new TestDBEntities())
+                {
+                    entities.employees.Add(employee);
+                    entities.SaveChanges();
+
+                    var message = Request.CreateResponse(HttpStatusCode.Created, employee);
+                    message.Headers.Location = new Uri(Request.RequestUri + employee.ID.ToString());
+                    return message;
+                }
+            }
+            catch(Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
+            }
+        }
 
 
     }
