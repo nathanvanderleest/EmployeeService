@@ -12,7 +12,8 @@ namespace EmployeeService.Controllers
     {
 
         // GET api/employee
-        public IEnumerable<employee> Get()
+        [HttpGet]
+        public IEnumerable<employee> LoadAllEmployees()
         {
             using(TestDBEntities entities = new TestDBEntities())
             {
@@ -21,7 +22,8 @@ namespace EmployeeService.Controllers
         }
 
         // GET api/employee/5
-        public HttpResponseMessage Get(int id)
+        [HttpGet]
+        public HttpResponseMessage LoadEmployeeById(int id)
         {
             using (TestDBEntities entities = new TestDBEntities())
             {
@@ -39,7 +41,8 @@ namespace EmployeeService.Controllers
         }
 
         // Post api/employee
-        public HttpResponseMessage Post([FromBody] employee employee)
+        [HttpPost]
+        public HttpResponseMessage InsertEmployee([FromBody] employee employee)
         {
             try
             {
@@ -60,7 +63,8 @@ namespace EmployeeService.Controllers
         }
 
         // Delete api/employee/5
-        public HttpResponseMessage Delete(int id)
+        [HttpDelete]
+        public HttpResponseMessage RemoveEmployee(int id)
         {
             try
             {
@@ -86,7 +90,8 @@ namespace EmployeeService.Controllers
         }
 
         // PUT api/employee/5
-        public HttpResponseMessage Put([FromUri]int id, [FromBody] employee employee)
+        [HttpPut]
+        public HttpResponseMessage UpdateEmployee([FromUri]int id, [FromBody] employee employee)
         {
             try
             {
