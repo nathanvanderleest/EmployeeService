@@ -13,11 +13,29 @@ namespace EmployeeService.Controllers
 
         // GET api/employee
         [HttpGet]
-        public IEnumerable<employee> LoadAllEmployees()
+        public HttpResponseMessage LoadAllEmployees(string gender = "all")
         {
-            using(TestDBEntities entities = new TestDBEntities())
+            try
             {
-                return entities.employees.ToList();
+                using (TestDBEntities entities = new TestDBEntities())
+                {
+                    switch (gender.ToLower())
+                    {
+                        case "all":
+                            return Request.CreateResponse(HttpStatusCode.OK, entities.employees.ToList());
+                        case "female":
+                            return Request.CreateResponse(HttpStatusCode.OK, entities.employees.Where(e => e.Gender.ToLower() == "female").ToList());
+                        case "male":
+                            return Request.CreateResponse(HttpStatusCode.OK, entities.employees.Where(e => e.Gender.ToLower() == "male").ToList());
+                        default:
+                            return Request.CreateErrorResponse(HttpStatusCode.BadRequest, 
+                                "Value for gender must all, female, or male. '" + gender.ToLower() + "' is invaild.");
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex);
             }
         }
 
